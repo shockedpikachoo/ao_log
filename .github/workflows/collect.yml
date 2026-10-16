@@ -7,6 +7,12 @@ name: Collect Asia kill events
 on:
   schedule:
     - cron: '17 * * * *'
+  # also start right away when the collector itself changes (data commits do not match these paths)
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/collect.yml'
+      - 'collector/**'
   workflow_dispatch:
 
 permissions:
