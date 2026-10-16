@@ -1,0 +1,32 @@
+name: Collect Asia kill events
+
+# One run polls the official API for up to 345 minutes. An hourly trigger queues the next run
+# behind the active one (same concurrency group), so the next run starts as soon as the active
+# one ends. While a run is active, newer triggers replace the queued one; GitHub lists the
+# replaced triggers as "cancelled", which is expected.
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collector
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 358
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Poll the official API and commit new events
+        run: python3 collector/collect.py --minutes 345

@@ -1,0 +1,8 @@
+{
+  "server": "sgp",
+  "stopAt": "2026-10-24T02:00:00+09:00",
+  "pollSeconds": 240,
+  "pageDelaySeconds": 1.5,
+  "overlapSeconds": 180,
+  "commitMinutes": 20
+}
