@@ -29,3 +29,9 @@
 {"at":"2026-10-17T20:44:03Z","pages":2,"new":41,"newSolo":13,"oldest":"2026-10-17T20:29:41Z","newest":"2026-10-17T20:38:56Z","coveredFrom":"2026-10-17T20:31:55Z","gap":false,"failed":false}
 {"at":"2026-10-17T20:48:03Z","warn":"fetch failed","off":0,"attempt":0,"error":"HTTP Error 504: Gateway Timeout"}
 {"at":"2026-10-17T20:48:20Z","pages":2,"new":32,"newSolo":11,"oldest":"2026-10-17T20:32:52Z","newest":"2026-10-17T20:42:58Z","coveredFrom":"2026-10-17T20:35:56Z","gap":false,"failed":false}
+{"at":"2026-10-17T20:52:03Z","pages":2,"new":24,"newSolo":11,"oldest":"2026-10-17T20:34:35Z","newest":"2026-10-17T20:46:53Z","coveredFrom":"2026-10-17T20:39:58Z","gap":false,"failed":false}
+{"at":"2026-10-17T20:56:03Z","pages":2,"new":34,"newSolo":15,"oldest":"2026-10-17T20:38:13Z","newest":"2026-10-17T20:50:51Z","coveredFrom":"2026-10-17T20:43:53Z","gap":false,"failed":false}
+{"at":"2026-10-17T21:00:03Z","pages":2,"new":63,"newSolo":17,"oldest":"2026-10-17T20:46:18Z","newest":"2026-10-17T20:54:38Z","coveredFrom":"2026-10-17T20:47:51Z","gap":false,"failed":false}
+{"at":"2026-10-17T21:04:03Z","pages":2,"new":44,"newSolo":16,"oldest":"2026-10-17T20:51:34Z","newest":"2026-10-17T20:58:57Z","coveredFrom":"2026-10-17T20:51:38Z","gap":false,"failed":false}
+{"at":"2026-10-17T21:08:03Z","pages":2,"new":37,"newSolo":17,"oldest":"2026-10-17T20:53:28Z","newest":"2026-10-17T21:02:58Z","coveredFrom":"2026-10-17T20:55:57Z","gap":false,"failed":false}
+{"at":"2026-10-17T21:12:03Z","pages":2,"new":48,"newSolo":19,"oldest":"2026-10-17T20:56:51Z","newest":"2026-10-17T21:06:51Z","coveredFrom":"2026-10-17T20:59:58Z","gap":false,"failed":false}
