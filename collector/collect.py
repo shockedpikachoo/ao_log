@@ -102,8 +102,8 @@ class Collector:
                 if isinstance(data, list):
                     return data
                 self.log({'warn': 'unexpected body', 'off': off, 'body': str(data)[:200]})
-            except (urllib.error.URLError, OSError, ValueError) as e:
-                self.log({'warn': 'fetch failed', 'off': off, 'attempt': attempt, 'error': str(e)[:200]})
+            except Exception as e:  # noqa: BLE001 - URLError, IncompleteRead, timeouts, bad JSON: all retried
+                self.log({'warn': 'fetch failed', 'off': off, 'attempt': attempt, 'error': f'{type(e).__name__}: {e}'[:200]})
             time.sleep(10 + 20 * attempt)
         return None
 
@@ -225,21 +225,26 @@ def main():
     deadline = min(start + dt.timedelta(minutes=a.minutes), stop_at)
     c = Collector(cfg, os.environ.get('GITHUB_RUN_ID', 'local'), not a.no_git)
     last_flush, polls = time.time(), 0
-    while utcnow() < deadline:
-        t0 = time.time()
-        c.poll()
-        polls += 1
-        if a.polls and polls >= a.polls:
-            break
-        if time.time() - last_flush >= cfg['commitMinutes'] * 60:
-            c.flush()
-            last_flush = time.time()
-        wait = max(30.0, cfg['pollSeconds'] - (time.time() - t0))
-        if utcnow() + dt.timedelta(seconds=wait) >= deadline:
-            break
-        time.sleep(wait)
-    c.log({'end': True, 'polls': polls})
-    c.flush(final=True)
+    try:
+        while utcnow() < deadline:
+            t0 = time.time()
+            try:
+                c.poll()
+            except Exception as e:  # noqa: BLE001 - keep collecting; the next poll re-reads the same range
+                c.log({'warn': 'poll crashed', 'error': f'{type(e).__name__}: {e}'[:200]})
+            polls += 1
+            if a.polls and polls >= a.polls:
+                break
+            if time.time() - last_flush >= cfg['commitMinutes'] * 60:
+                c.flush()
+                last_flush = time.time()
+            wait = max(30.0, cfg['pollSeconds'] - (time.time() - t0))
+            if utcnow() + dt.timedelta(seconds=wait) >= deadline:
+                break
+            time.sleep(wait)
+    finally:
+        c.log({'end': True, 'polls': polls})
+        c.flush(final=True)
 
 
 if __name__ == '__main__':
