@@ -1,0 +1,7 @@
+{"at":"2026-10-20T05:00:12Z","start":true,"run":"39355850460","knownEvents":38566,"storedNewest":"2026-10-20T01:30:42Z"}
+{"at":"2026-10-20T05:00:57Z","pages":21,"new":1035,"newSolo":592,"oldest":"2026-10-20T03:47:07Z","newest":"2026-10-20T04:55:06Z","coveredFrom":"2026-10-20T01:27:42Z","gap":true,"failed":false}
+{"at":"2026-10-20T05:04:17Z","pages":3,"new":60,"newSolo":38,"oldest":"2026-10-20T04:50:24Z","newest":"2026-10-20T04:59:08Z","coveredFrom":"2026-10-20T04:52:06Z","gap":false,"failed":false}
+{"at":"2026-10-20T05:08:17Z","pages":3,"new":75,"newSolo":36,"oldest":"2026-10-20T04:54:30Z","newest":"2026-10-20T05:03:09Z","coveredFrom":"2026-10-20T04:56:08Z","gap":false,"failed":false}
+{"at":"2026-10-20T05:12:15Z","pages":2,"new":55,"newSolo":35,"oldest":"2026-10-20T05:00:09Z","newest":"2026-10-20T05:07:09Z","coveredFrom":"2026-10-20T05:00:09Z","gap":false,"failed":false}
+{"at":"2026-10-20T05:16:15Z","pages":2,"new":55,"newSolo":32,"oldest":"2026-10-20T05:03:56Z","newest":"2026-10-20T05:11:09Z","coveredFrom":"2026-10-20T05:04:09Z","gap":false,"failed":false}
+{"at":"2026-10-20T05:20:17Z","pages":3,"new":70,"newSolo":32,"oldest":"2026-10-20T05:05:09Z","newest":"2026-10-20T05:15:11Z","coveredFrom":"2026-10-20T05:08:09Z","gap":false,"failed":false}
