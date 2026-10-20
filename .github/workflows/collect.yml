@@ -17,6 +17,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: collector
@@ -29,10 +30,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main          # the newest data, not the commit that was current when this run was queued
           fetch-depth: 1
       - name: Configure git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Queue the next run behind this one
+        # GitHub sometimes skips hourly triggers; queueing a successor here keeps the hand-off gapless.
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if python3 -c "import json,sys,datetime as d; c=json.load(open('collector/config.json')); sys.exit(0 if d.datetime.now(d.timezone.utc) < d.datetime.fromisoformat(c['stopAt']) else 1)"; then
+            gh workflow run collect.yml --ref main -R "$GITHUB_REPOSITORY" || echo "could not queue the next run; the hourly trigger still applies"
+          fi
       - name: Poll the official API and commit new events
         run: python3 collector/collect.py --minutes 345
