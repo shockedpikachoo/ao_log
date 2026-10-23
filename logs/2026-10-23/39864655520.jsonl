@@ -22,3 +22,14 @@
 {"at":"2026-10-23T02:28:34Z","pages":2,"new":30,"newSolo":16,"oldest":"2026-10-23T02:11:34Z","newest":"2026-10-23T02:23:25Z","coveredFrom":"2026-10-23T02:16:27Z","gap":false,"failed":false}
 {"at":"2026-10-23T02:32:34Z","pages":2,"new":60,"newSolo":26,"oldest":"2026-10-23T02:18:14Z","newest":"2026-10-23T02:27:29Z","coveredFrom":"2026-10-23T02:20:25Z","gap":false,"failed":false}
 {"at":"2026-10-23T02:36:36Z","pages":3,"new":56,"newSolo":33,"oldest":"2026-10-23T02:19:00Z","newest":"2026-10-23T02:31:24Z","coveredFrom":"2026-10-23T02:24:29Z","gap":false,"failed":false}
+{"at":"2026-10-23T02:42:41Z","pages":3,"new":56,"newSolo":38,"oldest":"2026-10-23T02:27:20Z","newest":"2026-10-23T02:35:28Z","coveredFrom":"2026-10-23T02:28:24Z","gap":false,"failed":false}
+{"at":"2026-10-23T02:45:04Z","warn":"fetch failed","off":0,"attempt":0,"error":"HTTPError: HTTP Error 504: Gateway Timeout"}
+{"at":"2026-10-23T02:46:09Z","warn":"fetch failed","off":51,"attempt":0,"error":"JSONDecodeError: Unterminated string starting at: line 1 column 251525 (char 251524)"}
+{"at":"2026-10-23T02:47:52Z","pages":3,"new":59,"newSolo":41,"oldest":"2026-10-23T02:31:24Z","newest":"2026-10-23T02:39:28Z","coveredFrom":"2026-10-23T02:32:28Z","gap":false,"failed":false}
+{"at":"2026-10-23T02:49:38Z","warn":"fetch failed","off":102,"attempt":0,"error":"JSONDecodeError: Unterminated string starting at: line 1 column 252876 (char 252875)"}
+{"at":"2026-10-23T02:50:54Z","warn":"fetch failed","off":102,"attempt":1,"error":"JSONDecodeError: Unterminated string starting at: line 1 column 241178 (char 241177)"}
+{"at":"2026-10-23T02:51:31Z","pages":3,"new":64,"newSolo":43,"oldest":"2026-10-23T02:35:02Z","newest":"2026-10-23T02:43:26Z","coveredFrom":"2026-10-23T02:36:28Z","gap":false,"failed":false}
+{"at":"2026-10-23T02:52:48Z","warn":"fetch failed","off":51,"attempt":0,"error":"HTTPError: HTTP Error 504: Gateway Timeout"}
+{"at":"2026-10-23T02:54:01Z","warn":"fetch failed","off":102,"attempt":0,"error":"JSONDecodeError: Expecting value: line 1 column 560285 (char 560284)"}
+{"at":"2026-10-23T02:54:20Z","pages":3,"new":52,"newSolo":25,"oldest":"2026-10-23T02:37:18Z","newest":"2026-10-23T02:47:27Z","coveredFrom":"2026-10-23T02:40:26Z","gap":false,"failed":false}
+{"at":"2026-10-23T02:56:59Z","pages":2,"new":52,"newSolo":27,"oldest":"2026-10-23T02:44:01Z","newest":"2026-10-23T02:51:24Z","coveredFrom":"2026-10-23T02:44:27Z","gap":false,"failed":false}
