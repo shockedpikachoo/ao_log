@@ -45,3 +45,9 @@
 {"at":"2026-10-25T19:08:38Z","pages":3,"new":59,"newSolo":20,"oldest":"2026-10-25T18:55:01Z","newest":"2026-10-25T19:03:27Z","coveredFrom":"2026-10-25T18:56:31Z","gap":false,"failed":false}
 {"at":"2026-10-25T19:12:39Z","pages":3,"new":61,"newSolo":21,"oldest":"2026-10-25T18:57:45Z","newest":"2026-10-25T19:07:30Z","coveredFrom":"2026-10-25T19:00:27Z","gap":false,"failed":false}
 {"at":"2026-10-25T19:16:36Z","pages":2,"new":47,"newSolo":17,"oldest":"2026-10-25T19:03:38Z","newest":"2026-10-25T19:11:26Z","coveredFrom":"2026-10-25T19:04:30Z","gap":false,"failed":false}
+{"at":"2026-10-25T19:20:36Z","pages":2,"new":42,"newSolo":25,"oldest":"2026-10-25T19:06:56Z","newest":"2026-10-25T19:15:21Z","coveredFrom":"2026-10-25T19:08:26Z","gap":false,"failed":false}
+{"at":"2026-10-25T19:24:36Z","pages":2,"new":47,"newSolo":16,"oldest":"2026-10-25T19:10:16Z","newest":"2026-10-25T19:19:04Z","coveredFrom":"2026-10-25T19:12:21Z","gap":false,"failed":false}
+{"at":"2026-10-25T19:28:38Z","pages":3,"new":72,"newSolo":28,"oldest":"2026-10-25T19:12:43Z","newest":"2026-10-25T19:23:24Z","coveredFrom":"2026-10-25T19:16:04Z","gap":false,"failed":false}
+{"at":"2026-10-25T19:32:38Z","pages":3,"new":65,"newSolo":20,"oldest":"2026-10-25T19:18:21Z","newest":"2026-10-25T19:27:28Z","coveredFrom":"2026-10-25T19:20:24Z","gap":false,"failed":false}
+{"at":"2026-10-25T19:36:36Z","pages":2,"new":34,"newSolo":17,"oldest":"2026-10-25T19:23:24Z","newest":"2026-10-25T19:31:32Z","coveredFrom":"2026-10-25T19:24:28Z","gap":false,"failed":false}
+{"at":"2026-10-25T19:40:36Z","pages":2,"new":55,"newSolo":22,"oldest":"2026-10-25T19:26:57Z","newest":"2026-10-25T19:35:30Z","coveredFrom":"2026-10-25T19:28:32Z","gap":false,"failed":false}
