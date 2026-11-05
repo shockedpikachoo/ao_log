@@ -12,6 +12,11 @@ Rules (same as the 10/08 sample):
   * weapons and armour: share = item count / (2 x records); items outside the guide stay in the
     denominator; empty slots are reported as missing;
   * offhand, cape, bag, potion, food, mount: share = item count / identified (non-empty) slot count.
+
+Co-used gear ("co" in the output): for every weapon and armour piece, the guide items most often found
+in the other slots of the same loadout (one loadout = one side of one record), top 3 per slot as
+[item, count] sorted by count, then item id. Shares are count / the anchor item's count; empty slots and
+items outside the guide stay in that denominator.
 """
 import collections, datetime as dt, glob, json, os, re, sys
 
@@ -96,11 +101,13 @@ armor = {s: {'mapped': 0, 'gathering': 0, 'missing': 0, 'outside': collections.C
 weap = {'mapped': 0, 'missing': 0, 'outside': collections.Counter()}
 extra = {k: {'equipped': 0, 'empty': 0, 'mapped': 0, 'outside': collections.Counter()} for k in EXTRA_SLOT}
 daily = collections.Counter()
+co = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))   # co[anchor][slot][item]
 for r in solo:
     day = (dt.datetime.strptime(r['t'], '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=dt.timezone.utc).astimezone(KST)).strftime('%m/%d')
     daily[day] += 1
     for side, gear in (('winner', r['ke']), ('victim', r['ve'])):
         g = dict(zip(SLOTS, gear))
+        loadout = {}                            # guide item per slot in this loadout, for co-usage
         # main hand
         t = g['MainHand']
         if not t:
@@ -108,6 +115,7 @@ for r in solo:
         else:
             k = map_main(t)
             if k and main_ids[k]['kind'] == 'weapon':
+                loadout['WEAPON'] = k
                 weap['mapped'] += 1
                 cnt[k]['count'] += 1
                 cnt[k][side] += 1
@@ -120,6 +128,7 @@ for r in solo:
                 continue
             k = map_main(t)
             if k and main_ids[k]['kind'] == 'armor' and main_ids[k]['slot'] == s:
+                loadout[s] = k
                 armor[s]['mapped'] += 1
                 cnt[k]['count'] += 1
                 cnt[k][side] += 1
@@ -134,11 +143,17 @@ for r in solo:
             extra[kind]['equipped'] += 1
             k = map_extra(t)
             if k and extra_ids[k]['kind'] == kind:
+                loadout[kind] = k
                 extra[kind]['mapped'] += 1
                 cnt[k]['count'] += 1
                 cnt[k][side] += 1
             else:
                 extra[kind]['outside'][plain(t)] += 1
+        for anchor in ('WEAPON', 'HEAD', 'ARMOR', 'SHOES'):
+            if anchor in loadout:
+                for other, k in loadout.items():
+                    if other != anchor:
+                        co[loadout[anchor]][other][k] += 1
 
 
 def ranks(ids):
@@ -183,6 +198,12 @@ for kind in EXTRA_SLOT:
         res['items'][k] = {**cnt[k], 'share': (cnt[k]['count'] / e['equipped']) if e['equipped'] else 0, 'rank': rk[k]}
     res['extras'][kind] = {'slot': EXTRA_SLOT[kind], 'equipped': e['equipped'], 'empty': e['empty'], 'mapped': e['mapped'],
                            'outside': dict(e['outside']), 'outsideCount': sum(e['outside'].values()), 'families': len(ids)}
+
+res['co'] = {a: {slot: sorted(c.items(), key=lambda x: (-x[1], x[0]))[:3] for slot, c in co[a].items()}
+             for a in sorted(co)}
+for a, slots in co.items():
+    for slot, c in slots.items():
+        assert sum(c.values()) <= cnt[a]['count'], (a, slot)
 
 # ------------------------------------------------------------------ collection health in the window
 polls = failed = gaps = warns = 0
