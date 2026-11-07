@@ -174,3 +174,13 @@
 {"at":"2026-11-07T07:41:04Z","warn":"fetch failed","off":0,"attempt":2,"error":"HTTPError: HTTP Error 504: Gateway Timeout"}
 {"at":"2026-11-07T07:41:58Z","warn":"fetch failed","off":0,"attempt":3,"error":"HTTPError: HTTP Error 504: Gateway Timeout"}
 {"at":"2026-11-07T07:43:08Z","pages":1,"new":0,"newSolo":0,"oldest":null,"newest":null,"coveredFrom":"2026-11-07T05:52:09Z","gap":false,"failed":true}
+{"at":"2026-11-07T07:44:34Z","warn":"fetch failed","off":102,"attempt":0,"error":"HTTPError: HTTP Error 504: Gateway Timeout"}
+{"at":"2026-11-07T07:46:11Z","pages":6,"new":182,"newSolo":60,"oldest":"2026-11-07T05:51:09Z","newest":"2026-11-07T06:08:52Z","coveredFrom":"2026-11-07T05:52:09Z","gap":false,"failed":false}
+{"at":"2026-11-07T07:48:16Z","warn":"fetch failed","off":0,"attempt":0,"error":"HTTPError: HTTP Error 504: Gateway Timeout"}
+{"at":"2026-11-07T07:48:37Z","warn":"fetch failed","off":51,"attempt":0,"error":"HTTPError: HTTP Error 504: Gateway Timeout"}
+{"at":"2026-11-07T07:48:51Z","warn":"fetch failed","off":51,"attempt":1,"error":"HTTPError: HTTP Error 504: Gateway Timeout"}
+{"at":"2026-11-07T07:49:30Z","pages":2,"new":0,"newSolo":0,"oldest":"2026-11-07T05:58:08Z","newest":"2026-11-07T06:08:52Z","coveredFrom":"2026-11-07T06:05:52Z","gap":false,"failed":false}
+{"at":"2026-11-07T07:52:16Z","pages":2,"new":0,"newSolo":0,"oldest":"2026-11-07T05:58:08Z","newest":"2026-11-07T06:08:52Z","coveredFrom":"2026-11-07T06:05:52Z","gap":false,"failed":false}
+{"at":"2026-11-07T07:56:15Z","pages":2,"new":9,"newSolo":7,"oldest":"2026-11-07T05:58:37Z","newest":"2026-11-07T07:50:43Z","coveredFrom":"2026-11-07T06:05:52Z","gap":false,"failed":false}
+{"at":"2026-11-07T08:00:15Z","pages":2,"new":27,"newSolo":17,"oldest":"2026-11-07T05:59:27Z","newest":"2026-11-07T07:55:00Z","coveredFrom":"2026-11-07T07:47:43Z","gap":false,"failed":false}
+{"at":"2026-11-07T08:04:15Z","pages":2,"new":36,"newSolo":20,"oldest":"2026-11-07T06:00:36Z","newest":"2026-11-07T07:58:59Z","coveredFrom":"2026-11-07T07:52:00Z","gap":false,"failed":false}
