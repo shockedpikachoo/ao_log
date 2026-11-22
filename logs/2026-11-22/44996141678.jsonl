@@ -86,3 +86,4 @@
 {"at":"2026-11-22T15:37:26Z","pages":14,"new":331,"newSolo":31,"oldest":"2026-11-22T15:24:38Z","newest":"2026-11-22T15:31:53Z","coveredFrom":"2026-11-22T15:24:51Z","gap":false,"failed":false}
 {"at":"2026-11-22T15:41:15Z","pages":10,"new":240,"newSolo":39,"oldest":"2026-11-22T15:28:43Z","newest":"2026-11-22T15:35:53Z","coveredFrom":"2026-11-22T15:28:53Z","gap":false,"failed":false}
 {"at":"2026-11-22T15:45:13Z","pages":10,"new":267,"newSolo":36,"oldest":"2026-11-22T15:32:07Z","newest":"2026-11-22T15:39:53Z","coveredFrom":"2026-11-22T15:32:53Z","gap":false,"failed":false}
+{"at":"2026-11-22T15:45:15Z","end":true,"polls":87}
