@@ -6,7 +6,14 @@ import json, re, sys
 
 NEW, PREV = sys.argv[1:3]
 FINAL = '--final' in sys.argv
-ALLOWED_NEW_URLS = {'https://steamcommunity.com/games/761890/announcements/detail/1849458702693040'}
+ALLOWED_NEW_URLS = {'https://steamcommunity.com/games/761890/announcements/detail/1850460852984814',
+                    'https://github.com/ao-data/ao-bin-dumps/tree/d277a5cf8a76535f1dccadbf35b36350ae2665aa',
+                    'https://github.com/ao-data/ao-bin-dumps/blob/d277a5cf8a76535f1dccadbf35b36350ae2665aa/gamedata.xml',
+                    'https://github.com/ao-data/ao-bin-dumps/blob/d277a5cf8a76535f1dccadbf35b36350ae2665aa/spells.xml'}
+ALLOWED_GONE_URLS = {'https://steamcommunity.com/games/761890/announcements/detail/1847920302247585',
+                     'https://github.com/ao-data/ao-bin-dumps/tree/0483dd97f1581dfaf02eed42f25f5ea2a3cb75e5',
+                     'https://github.com/ao-data/ao-bin-dumps/blob/0483dd97f1581dfaf02eed42f25f5ea2a3cb75e5/gamedata.xml',
+                     'https://github.com/ao-data/ao-bin-dumps/blob/0483dd97f1581dfaf02eed42f25f5ea2a3cb75e5/spells.xml'}
 problems = []
 
 
@@ -34,11 +41,18 @@ if html.count('<script id="guideData"') != 1 or len(data['items']) != 342 or len
     problems.append('data block shape')
 
 # 2. strings of the previous version that must be gone from the current parts (history records may keep them)
-for pat in ('최근 11일', '2026.11.13 수집', '11/2–11/12', '11월 5–12일', '11/5–12', '186,130', '294,194', '08:27', '6번째', '세 버전', '1,421', '303칸', '11월 4일 이전',
-            '2026.11.05–12', '11.05–13', '8-DAY', '종합판10월', '504 오류', '15:09–16:49'):
+for pat in ('2026.11.19 수집', '11/6–11/19', '11월 6일–11월 19일', '11월 13–18일', '11/13–18', '145,612', '231,269', '158,463', '17:42', '7번째', '네 버전', '395칸',
+            '11월 11일 이전', '2026.11.13–18', '11.13–19', '6-DAY', '0.14%', '2026.11.02 게임 데이터', '최신 커밋은 2026.11.02 추출본', '수치 원본 2026.11.02',
+            '패치 4 반영: 2026.11.05', '11월 2일 드래곤파이어 패치 4 반영', '원본 2026.11.02(패치 4', '2026.11.02 업데이트(드래곤파이어 패치 4', '수치 재대조: 2026.11.13',
+            '최근 11일', '11월 17일 0시 31–39분', '+0.3%', '+145%', '612개'):
     for part, name in ((cur, 'current notes/hero'), (after, 'panels/footer'), (J, 'script')):
         if pat in part:
             problems.append(f'{name}: stale {pat!r}: …{part[max(0, part.index(pat) - 60):part.index(pat) + 40]}…')
+if '최근 14일' in J:
+    problems.append('script: 최근 14일 left (this version shows 패치 5 이전 14일)')
+for pat, n in (('패치 5 이전 14일', 9),):
+    if J.count(pat) != n:
+        problems.append(f'script: {pat!r} {J.count(pat)}x (expected {n})')
 for pat, n in (('(검증 문장은 점검을 마친 뒤 채웁니다.)', 0 if FINAL else 1), ('id="featureQaText"', 1), ('id="marketPanel"', 1), ('id="featureReview"', 1)):
     if html.count(pat) != n:
         problems.append(f'{pat!r} appears {html.count(pat)}× (expected {n})')
@@ -61,9 +75,9 @@ def walk(o, path=''):
 for path, s in walk({k: v for k, v in data.items() if k != 'images'}):
     if path.startswith(('.meta.rankHistory', '.meta.review', '.meta.market.previous', '.meta.pvpExtras.previous', '.meta.patch', '.meta.update')):
         continue
-    for pat in ('11/5–12', '11월 5–12일', '2.2일', '10월 12일 게임 데이터', '최근 11일', '2026.11.13'):
-        if pat == '2026.11.13' and path in ('.meta.period', '.meta.periodKstLabel', '.meta.numericCheckedDate'):
-            continue                     # the new sample starts on 11/13; numbers were last re-compared on 11/13
+    for pat in ('11/13–18', '11월 13–18일', '11월 2일 게임 데이터', '10월 12일 게임 데이터', '최근 11일', '2026.11.19', '2026.11.13'):
+        if pat == '2026.11.19' and path in ('.meta.period', '.meta.periodKstLabel'):
+            continue                     # the new sample starts on 11/19
         if pat in s:
             problems.append(f'data string {path}: {pat!r} in {s[:120]!r}')
 
@@ -72,7 +86,7 @@ urls = lambda s: set(re.findall(r'https?://[^\s"\'<>)\\]+', s))
 new_urls = urls(H + J) - urls(H0 + J0)
 if new_urls - ALLOWED_NEW_URLS:
     problems.append(f'new URLs: {sorted(new_urls - ALLOWED_NEW_URLS)}')
-gone = urls(H0 + J0) - urls(H + J)
+gone = urls(H0 + J0) - urls(H + J) - ALLOWED_GONE_URLS
 if gone:
     problems.append(f'URLs that disappeared: {sorted(gone)}')
 

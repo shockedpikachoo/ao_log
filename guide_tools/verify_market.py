@@ -18,6 +18,7 @@ m = re.search(r'<script id="guideData" type="application/json">(.*?)</script>', 
 data = json.loads(m.group(1))
 MK = data['meta']['market']
 SINCE, UNTIL, FRESH, LOWN = MK['since'], MK['until'], MK['fresh'], MK['lowN']
+CUT = MK.get('ordersBefore')            # pre-patch snapshot: orders seen in the 24 h before CUT
 CITY = MK['cities']
 LABELS = MK['tiers']
 problems = []
@@ -61,8 +62,10 @@ if MK['histFetched'] != [man_h['started'], man_h['finished']]:
     bad('histFetched differs from the manifest')
 if MK['ordersFetched'] != [man_o['started'], man_o['finished']]:
     bad('ordersFetched differs from the manifest')
-if man_h['finished'][:10] != UNTIL:
+if CUT is None and man_h['finished'][:10] != UNTIL:
     bad('window does not end on the UTC day of the fetch')
+if CUT is not None and not (man_h['started'] >= CUT + 'Z' and man_o['started'] >= CUT + 'Z'):
+    bad('the snapshot was not taken after the cut-off')
 if man_h['query']['time-scale'] != '24' or 'east.albion-online-data.com' not in man_h['host']:
     bad('unexpected query')
 q0 = [int(x) for x in man_h['query']['date'].split('-')]            # M-D-YYYY
@@ -153,7 +156,7 @@ def pool_fast(item, where):
     return out
 
 
-t_orders = man_o['started']                     # 'YYYY-MM-DDTHH:MM:SSZ'
+t_orders = (CUT + 'Z') if CUT else man_o['started']          # 'YYYY-MM-DDTHH:MM:SSZ'
 y, mo, dd = int(t_orders[:4]), int(t_orders[5:7]), int(t_orders[8:10])
 dd -= 1
 if dd == 0:
@@ -162,6 +165,12 @@ if dd == 0:
         mo, y = 12, y - 1
     dd = [31, 29 if (y % 4 == 0 and (y % 100 != 0 or y % 400 == 0)) else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][mo - 1]
 NOT_BEFORE = f'{y:04d}-{mo:02d}-{dd:02d}{t_orders[10:19]}'
+NOT_FROM = CUT or '9999'
+if CUT is not None:
+    cy, cm, cd = int(CUT[:4]), int(CUT[5:7]), int(CUT[8:10])
+    uy, um, ud = int(UNTIL[:4]), int(UNTIL[5:7]), int(UNTIL[8:10])
+    if not ((cy, cm) == (uy, um) and cd - ud == 1):
+        bad('the window does not end the UTC day before the cut-off')
 
 float_ties = 0
 dropped = {'city': 0, 'bm': 0}
@@ -195,7 +204,7 @@ def expect_cell(item):
         out['b'] = [p, n, max(r[1] for r in bm_keep)]
     best = None
     for r in orders.get(item, []):
-        if r['city'] in CITY and r['quality'] in (1, 2, 3) and r['sell_price_min'] > 0 and r['sell_price_min_date'] >= NOT_BEFORE:
+        if r['city'] in CITY and r['quality'] in (1, 2, 3) and r['sell_price_min'] > 0 and NOT_BEFORE <= r['sell_price_min_date'] < NOT_FROM:
             cand = (r['sell_price_min'], CITY.index(r['city']), r['quality'], r['sell_price_min_date'])
             if best is None or cand < best:
                 best = cand

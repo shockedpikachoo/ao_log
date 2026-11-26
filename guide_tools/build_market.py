@@ -1,6 +1,8 @@
 """Turn a raw AODP snapshot (fetch_market.py) into the guide's price cells and the figures quoted in the page.
 
-Usage: python3 -I build_market.py <raw dir> <idmap.json> <guide html or guideData.json> <since YYYY-MM-DD> <until YYYY-MM-DD> <out.json>
+Usage: python3 -I build_market.py <raw dir> <idmap.json> <guide html or guideData.json> <since YYYY-MM-DD> <until YYYY-MM-DD> <out.json> [orders before]
+  orders before = optional UTC 'YYYY-MM-DDTHH:MM:SS' (a balance patch going live): the window then ends the UTC day before it,
+                  and only sell orders seen in the 24 h before it are used (a pre-patch snapshot fetched after the patch).
 
 idmap: guide item id -> {"t": {"4.0": item id | null, ...}, "ref": [[label, item id], ...]}
 Cell rules (unchanged since the 10/25 price version):
@@ -9,11 +11,12 @@ Cell rules (unchanged since the 10/25 price version):
     the 7 cities pooled together, the Black Market separately;
   * p = volume-weighted average of the kept city records (rounded), n = units, d = trading days, l = last day,
     c = per-city [city, avg, units, last day] sorted by price; b = Black Market [avg, units, last day];
-  * o = cheapest current city sell order (quality 1-3) seen within 24 h before the order fetch.
+  * o = cheapest current city sell order (quality 1-3) seen within 24 h before the order fetch (or before the cut-off).
 """
 import bisect, collections, datetime as dt, gzip, itertools, json, os, re, statistics, sys
 
 RAW, IDMAP, GUIDE, SINCE, UNTIL, OUT = sys.argv[1:7]
+ORDERS_BEFORE = sys.argv[7] if len(sys.argv) > 7 else None
 CITIES = ['Bridgewatch', 'Fort Sterling', 'Lymhurst', 'Martlock', 'Thetford', 'Caerleon', 'Brecilien']
 BM = 'Black Market'
 TIERS = ['4.0', '4.1', '5.0', '4.2', '5.1', '6.0', '7.0', '8.0']
@@ -21,7 +24,12 @@ LOWN = 10
 
 man_h = json.load(open(os.path.join(RAW, 'manifest_hist.json'), encoding='utf-8'))
 man_o = json.load(open(os.path.join(RAW, 'manifest_orders.json'), encoding='utf-8'))
-assert man_h['finished'][:10] == UNTIL, 'the window must end on the UTC day of the fetch'
+if ORDERS_BEFORE:
+    cut = dt.datetime.strptime(ORDERS_BEFORE, '%Y-%m-%dT%H:%M:%S')
+    assert (cut.date() - dt.timedelta(days=1)).isoformat() == UNTIL, 'the window must end the UTC day before the cut-off'
+    assert man_h['started'] >= ORDERS_BEFORE + 'Z' and man_o['started'] >= ORDERS_BEFORE + 'Z', 'the snapshot was taken after the cut-off'
+else:
+    assert man_h['finished'][:10] == UNTIL, 'the window must end on the UTC day of the fetch'
 idmap = json.load(open(IDMAP, encoding='utf-8'))
 text = open(GUIDE, encoding='utf-8').read()
 if GUIDE.endswith('.html'):
@@ -42,8 +50,9 @@ for f in man_o['files']:
     blob = json.load(gzip.open(os.path.join(RAW, f['file']), 'rt', encoding='utf-8'))
     for r in blob['rows']:
         orders[r['item_id']].append(r)
-t_ord = dt.datetime.strptime(man_o['started'], '%Y-%m-%dT%H:%M:%SZ')
+t_ord = dt.datetime.strptime(ORDERS_BEFORE, '%Y-%m-%dT%H:%M:%S') if ORDERS_BEFORE else dt.datetime.strptime(man_o['started'], '%Y-%m-%dT%H:%M:%SZ')
 ORDER_FROM = (t_ord - dt.timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%S')
+ORDER_TO = ORDERS_BEFORE or '9999'
 
 
 def usable(recs, where):
@@ -95,7 +104,7 @@ def cell(iid):
         out['b'] = [a, u, max(r[2] for r in bm)]
     cand = [(r['sell_price_min'], CITIES.index(r['city']), r['quality'], r['sell_price_min_date'])
             for r in orders.get(iid, [])
-            if r['city'] in CITIES and r['quality'] in (1, 2, 3) and r['sell_price_min'] > 0 and r['sell_price_min_date'] >= ORDER_FROM]
+            if r['city'] in CITIES and r['quality'] in (1, 2, 3) and r['sell_price_min'] > 0 and ORDER_FROM <= r['sell_price_min_date'] < ORDER_TO]
     if cand:
         price, ci, q, seen = min(cand)
         out['o'] = [price, CITIES[ci], q, seen[:16]]
@@ -171,6 +180,8 @@ meta = {'source': 'Albion Online Data Project (east.albion-online-data.com)', 's
         'histFetched': [man_h['started'], man_h['finished']], 'ordersFetched': [man_o['started'], man_o['finished']],
         'collectedLabel': label, 'counts': dict(counts), 'dropped': {'city': drop_n['city'], 'bm': drop_n['bm']}, 'tiers': TIERS,
         'ipGroups': {'700': ['4.0'], '800': ['4.1', '5.0'], '900': ['4.2', '5.1', '6.0'], '1000': ['7.0'], '1100': ['8.0']}}
+if ORDERS_BEFORE:
+    meta['ordersBefore'] = ORDERS_BEFORE
 stats = {'byKind': {k: dict(v) for k, v in by_kind.items()}, 'bmOverCityMedian': statistics.median(pairs), 'bmOverCityPairs': len(pairs),
          'bmAboveCityPairs': sum(1 for x in pairs if x > 1), 'cityUnits': city_units, 'droppedUnits': dict(drop_units),
          'droppedCityUnitShare': drop_units['city'] / (city_units + drop_units['city']),
